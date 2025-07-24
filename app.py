@@ -10,11 +10,11 @@ st.set_page_config(page_title="Parkinson's Detector", layout="centered")
 
 # Custom CSS for background image and UI enhancements
 st.markdown(
-    f"""
+    """
     <style>
     /* Overall app background */
     .stApp {{
-        background-image: url("https://raw.githubusercontent.com/loknadh09/Parkinsons-Disease-Detection-Using-AI/refs/heads/main/par.webp"); 
+        background-image: url("https://raw.githubusercontent.com/loknadh09/Parkinsons-Disease-Detection-Using-AI/refs/heads/main/par.webp"); /* <--- Your provided image URL is here */
         background-size: cover; /* Ensures the image covers the entire background */
         background-position: center; /* Centers the image */
         background-repeat: no-repeat; /* Prevents the image from repeating */
@@ -43,22 +43,22 @@ st.markdown(
     }}
 
     /* Styles the main content block to have a semi-transparent background, padding, and rounded corners */
-    /* Note: Streamlit's internal CSS class names like .css-1d391kg.e16z5j303 can sometimes change */
     .css-1d391kg.e16z5j303 {{
         background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
         padding: 20px;
         border-radius: 10px;
     }}
-    .e1fb0mya1.css-1r6dm1x.exnng7e0 { /* Targeting the inner content block if the above doesn't cover everything */
+    .e1fb0mya1.css-1r6dm1x.exnng7e0 {{
         background-color: rgba(0, 0, 0, 0.6);
         padding: 20px;
         border-radius: 10px;
-    }
+    }}
 
     </style>
     """,
     unsafe_allow_html=True
 )
+
 
 # Load the dataset
 # Ensure 'parkinsons.csv' is in the same directory as 'app.py' or provide its path
@@ -98,7 +98,6 @@ def plot_prediction_chart(probabilities):
     ax.bar(labels, healthy_probs, bottom=park_probs, label="Healthy 💚", color='green')
     ax.set_ylabel('Probability (%)')
     ax.set_title("Prediction Probabilities for Each Sample")
-    ax.legend()
     # Enhance chart readability on dark background
     ax.yaxis.label.set_color('white')
     ax.xaxis.label.set_color('white')
