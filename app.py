@@ -8,45 +8,53 @@ from sklearn.preprocessing import StandardScaler
 
 st.set_page_config(page_title="Parkinson's Detector", layout="centered")
 
+# Custom CSS for background image and UI enhancements
 st.markdown(
     """
     <style>
-    .stApp {{
-        background-image: url("https://raw.githubusercontent.com/loknadh09/Parkinsons-Disease-Detection-Using-AI/main/par.webp");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-    }}
-
-    .stApp > header {{
-        background-color: rgba(0,0,0,0);
-    }}
-
-    .stApp {{
-        background-color: rgba(0,0,0,0.5);
-    }}
-
-    .stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp h5, .stApp h6, .stApp p, .stApp label, .stApp .stMarkdown {{
-        color: #FFFFFF;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-    }}
-
-    .stFileUploader label span {{
+    body {
+        background-image: url("https://raw.githubusercontent.com/loknadh09/Parkinsons-Disease-Detection-Using-AI/main/par.webp") !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+    }
+    .stApp {
+        background-image: url("https://raw.githubusercontent.com/loknadh09/Parkinsons-Disease-Detection-Using-AI/main/par.webp") !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+        background-color: rgba(0,0,0,0.5) !important;
+    }
+    .stApp > header {
+        background-color: rgba(0,0,0,0) !important;
+    }
+    h1, h2, h3, h4, h5, h6, p, label, .stMarkdown, .stText, .stButton>button {
         color: #FFFFFF !important;
-    }}
-
-    .css-1d391kg.e16z5j303 {{
-        background-color: rgba(0, 0, 0, 0.6);
-        padding: 20px;
-        border-radius: 10px;
-    }}
-    .e1fb0mya1.css-1r6dm1x.exnng7e0 {{
-        background-color: rgba(0, 0, 0, 0.6);
-        padding: 20px;
-        border-radius: 10px;
-    }}
-
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
+    }
+    .stFileUploader label span {
+        color: #FFFFFF !important;
+    }
+    div.st-emotion-cache-1pxazr7 {
+        background-color: rgba(0, 0, 0, 0.6) !important;
+        padding: 20px !important;
+        border-radius: 10px !important;
+    }
+    .css-1d391kg.e16z5j303 {
+        background-color: rgba(0, 0, 0, 0.6) !important;
+        padding: 20px !important;
+        border-radius: 10px !important;
+    }
+    .e1fb0mya1.css-1r6dm1x.exnng7e0 {
+        background-color: rgba(0, 0, 0, 0.6) !important;
+        padding: 20px !important;
+        border-radius: 10px !important;
+    }
+    .stPlotlyChart .modebar, .stPlotlyChart .js-plotly-plot .plotly .legend .legendtoggle {
+        color: #FFFFFF !important;
+    }
     </style>
     """,
     unsafe_allow_html=True
@@ -61,7 +69,6 @@ y = df['status']
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
-
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
 model = RandomForestClassifier(random_state=42)
