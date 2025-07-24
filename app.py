@@ -12,12 +12,14 @@ st.set_page_config(page_title="Parkinson's Detector", layout="centered")
 st.markdown(
     """
     <style>
+    /* Overall app background */
     body {
         background-image: url("https://raw.githubusercontent.com/loknadh09/Parkinsons-Disease-Detection-Using-AI/main/par.webp") !important;
         background-size: cover !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
         background-attachment: fixed !important;
+        opacity: 0.6 !important; /* Decreased opacity of the background image */
     }
     .stApp {
         background-image: url("https://raw.githubusercontent.com/loknadh09/Parkinsons-Disease-Detection-Using-AI/main/par.webp") !important;
@@ -25,7 +27,7 @@ st.markdown(
         background-position: center !important;
         background-repeat: no-repeat !important;
         background-attachment: fixed !important;
-        background-color: rgba(0,0,0,0.5) !important;
+        background-color: rgba(0,0,0,0.3) !important; /* Slightly transparent overlay for text contrast */
     }
     .stApp > header {
         background-color: rgba(0,0,0,0) !important;
@@ -37,21 +39,23 @@ st.markdown(
     .stFileUploader label span {
         color: #FFFFFF !important;
     }
+    /* Attempt to target Streamlit's main content containers */
     div.st-emotion-cache-1pxazr7 {
-        background-color: rgba(0, 0, 0, 0.6) !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
         padding: 20px !important;
         border-radius: 10px !important;
     }
     .css-1d391kg.e16z5j303 {
-        background-color: rgba(0, 0, 0, 0.6) !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
         padding: 20px !important;
         border-radius: 10px !important;
     }
     .e1fb0mya1.css-1r6dm1x.exnng7e0 {
-        background-color: rgba(0, 0, 0, 0.6) !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
         padding: 20px !important;
         border-radius: 10px !important;
     }
+    /* Ensure chart legends and modebars are visible */
     .stPlotlyChart .modebar, .stPlotlyChart .js-plotly-plot .plotly .legend .legendtoggle {
         color: #FFFFFF !important;
     }
@@ -154,8 +158,8 @@ if uploaded_file is not None:
 
             binary_preds = []
             for i, probs in enumerate(predictions):
-                parkinsons_prob = probs[1] * 100
-                healthy_prob = probs[0] * 100
+                parkinsons_prob = probs[1]*100
+                healthy_prob = probs[0]*100
                 if parkinsons_prob > healthy_prob:
                     st.markdown(
                         f"**Sample {i+1}:** <span style='color:red;'>🟥 Parkinson's Detected</span> "
