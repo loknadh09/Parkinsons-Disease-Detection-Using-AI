@@ -8,54 +8,62 @@ from sklearn.preprocessing import StandardScaler
 
 st.set_page_config(page_title="Parkinson's Detector", layout="centered")
 
-# Custom CSS for background image and UI enhancements
+# Custom CSS for translucent background image and UI enhancements
 st.markdown(
     """
     <style>
-    /* Overall app background */
-    body {
-        background-image: url("https://raw.githubusercontent.com/loknadh09/Parkinsons-Disease-Detection-Using-AI/main/par.webp") !important;
-        background-size: cover !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important;
-        background-attachment: fixed !important;
-        opacity: 0.6 !important; /* Decreased opacity of the background image */
-    }
+    /* Use a pseudo-element for the background image to control its opacity separately */
     .stApp {
-        background-image: url("https://raw.githubusercontent.com/loknadh09/Parkinsons-Disease-Detection-Using-AI/main/par.webp") !important;
-        background-size: cover !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important;
-        background-attachment: fixed !important;
-        background-color: rgba(0,0,0,0.3) !important; /* Slightly transparent overlay for text contrast */
+        position: relative; /* Needed for pseudo-element positioning */
+        z-index: 1; /* Ensure app content is above the background */
     }
+
+    .stApp::before {
+        content: "";
+        position: fixed; /* Fixed position so it covers the whole viewport */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("https://raw.githubusercontent.com/loknadh09/Parkinsons-Disease-Detection-Using-AI/main/par.webp");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        opacity: 0.2; /* Adjust this value (0.0 to 1.0) for translucency. Lower is more translucent. */
+        z-index: -1; /* Place the pseudo-element behind other content */
+    }
+
+    /* Make Streamlit's header transparent so the background shows through */
     .stApp > header {
         background-color: rgba(0,0,0,0) !important;
     }
-    h1, h2, h3, h4, h5, h6, p, label, .stMarkdown, .stText, .stButton>button {
+
+    /* Content containers will have a semi-transparent black background for better text contrast */
+    /* Adjust the rgba values for desired darkness/transparency of content boxes */
+    .stApp { /* Ensure the main app container does not block background */
+        background-color: rgba(0,0,0,0); /* Set main app background to fully transparent */
+    }
+    div.st-emotion-cache-1pxazr7,
+    .css-1d391kg.e16z5j303,
+    .e1fb0mya1.css-1r6dm1x.exnng7e0 {
+        background-color: rgba(0, 0, 0, 0.6) !important; /* Semi-transparent black for content boxes */
+        padding: 20px !important;
+        border-radius: 10px !important;
+    }
+
+    /* Text color for better visibility */
+    h1, h2, h3, h4, h5, h6, p, label, .stMarkdown, .stText, .stButton>button, .stProgress .stProgress-label {
         color: #FFFFFF !important;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
     }
+
+    /* Ensure file uploader label is visible */
     .stFileUploader label span {
         color: #FFFFFF !important;
     }
-    /* Attempt to target Streamlit's main content containers */
-    div.st-emotion-cache-1pxazr7 {
-        background-color: rgba(0, 0, 0, 0.5) !important;
-        padding: 20px !important;
-        border-radius: 10px !important;
-    }
-    .css-1d391kg.e16z5j303 {
-        background-color: rgba(0, 0, 0, 0.5) !important;
-        padding: 20px !important;
-        border-radius: 10px !important;
-    }
-    .e1fb0mya1.css-1r6dm1x.exnng7e0 {
-        background-color: rgba(0, 0, 0, 0.5) !important;
-        padding: 20px !important;
-        border-radius: 10px !important;
-    }
-    /* Ensure chart legends and modebars are visible */
+
+    /* Chart labels and titles */
     .stPlotlyChart .modebar, .stPlotlyChart .js-plotly-plot .plotly .legend .legendtoggle {
         color: #FFFFFF !important;
     }
