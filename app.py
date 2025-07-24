@@ -8,19 +8,24 @@ from sklearn.preprocessing import StandardScaler
 
 st.set_page_config(page_title="Parkinson's Detector", layout="centered")
 
-# Custom CSS for translucent background image and UI enhancements
 st.markdown(
     """
     <style>
-    /* Use a pseudo-element for the background image to control its opacity separately */
+    body {
+        background-image: url("https://raw.githubusercontent.com/loknadh09/Parkinsons-Disease-Detection-Using-AI/main/par.webp") !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+    }
     .stApp {
-        position: relative; /* Needed for pseudo-element positioning */
-        z-index: 1; /* Ensure app content is above the background */
+        position: relative;
+        z-index: 1;
     }
 
     .stApp::before {
         content: "";
-        position: fixed; /* Fixed position so it covers the whole viewport */
+        position: fixed;
         top: 0;
         left: 0;
         width: 100%;
@@ -30,40 +35,34 @@ st.markdown(
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
-        opacity: 0.2; /* Adjust this value (0.0 to 1.0) for translucency. Lower is more translucent. */
-        z-index: -1; /* Place the pseudo-element behind other content */
+        opacity: 0.2;
+        z-index: -1;
     }
 
-    /* Make Streamlit's header transparent so the background shows through */
     .stApp > header {
         background-color: rgba(0,0,0,0) !important;
     }
 
-    /* Content containers will have a semi-transparent black background for better text contrast */
-    /* Adjust the rgba values for desired darkness/transparency of content boxes */
-    .stApp { /* Ensure the main app container does not block background */
-        background-color: rgba(0,0,0,0); /* Set main app background to fully transparent */
+    .stApp {
+        background-color: rgba(0,0,0,0);
     }
     div.st-emotion-cache-1pxazr7,
     .css-1d391kg.e16z5j303,
     .e1fb0mya1.css-1r6dm1x.exnng7e0 {
-        background-color: rgba(0, 0, 0, 0.6) !important; /* Semi-transparent black for content boxes */
+        background-color: rgba(0, 0, 0, 0.6) !important;
         padding: 20px !important;
         border-radius: 10px !important;
     }
 
-    /* Text color for better visibility */
     h1, h2, h3, h4, h5, h6, p, label, .stMarkdown, .stText, .stButton>button, .stProgress .stProgress-label {
         color: #FFFFFF !important;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
     }
 
-    /* Ensures file uploader label is visible */
     .stFileUploader label span {
         color: #FFFFFF !important;
     }
 
-    /* Chart labels and titles */
     .stPlotlyChart .modebar, .stPlotlyChart .js-plotly-plot .plotly .legend .legendtoggle {
         color: #FFFFFF !important;
     }
@@ -72,10 +71,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- Core Application Functionality ---
-
-# Load the dataset
-# Ensure 'parkinsons.csv' is in the same directory as 'app.py' or provide its path
 df = pd.read_csv("parkinsons.csv")
 if 'name' in df.columns:
     df = df.drop(columns=['name'])
@@ -83,18 +78,14 @@ if 'name' in df.columns:
 X = df.drop(columns=['status'])
 y = df['status']
 
-# Scale features
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Split data
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
-# Train the model
 model = RandomForestClassifier(random_state=42)
 model.fit(X_train, y_train)
 
-# Calculate model accuracy on test data
 accuracy = model.score(X_test, y_test) * 100
 
 st.title("🧠 Parkinson's Disease Detection")
@@ -102,7 +93,6 @@ st.write("Upload a CSV file with matching features to predict Parkinson's diseas
 
 uploaded_file = st.file_uploader("📁 Upload your CSV file here", type=["csv"])
 
-# --- Chart Plotting Functions ---
 def plot_prediction_chart(probabilities):
     labels = [f"S{i+1}" for i in range(len(probabilities))]
     park_probs = [p[1]*100 for p in probabilities]
@@ -158,7 +148,6 @@ def plot_confidence_trend(probabilities):
     fig.patch.set_alpha(0.0)
     st.pyplot(fig)
 
-# --- File Uploader and Prediction Logic ---
 if uploaded_file is not None:
     try:
         input_df = pd.read_csv(uploaded_file)
@@ -167,12 +156,10 @@ if uploaded_file is not None:
         if 'status' in input_df.columns:
             input_df = input_df.drop(columns=['status'])
 
-        # Input validation: Ensure all expected columns are present
         missing_cols = set(X.columns) - set(input_df.columns)
         if missing_cols:
             st.error(f"⚠️ Uploaded file is missing required features: {', '.join(missing_cols)}. Please ensure your CSV matches the expected format.")
         else:
-            # Reorder columns to match training data before scaling
             input_df = input_df[X.columns]
             input_scaled = scaler.transform(input_df)
             predictions = model.predict_proba(input_scaled)
