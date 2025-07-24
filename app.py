@@ -8,11 +8,9 @@ from sklearn.preprocessing import StandardScaler
 
 st.set_page_config(page_title="Parkinson's Detector", layout="centered")
 
-# --- CUSTOM CSS FOR TRANSLUCENT BACKGROUND ---
 st.markdown(
     """
     <style>
-    /* Set the background image directly on the HTML body */
     body {
         background-image: url("https://raw.githubusercontent.com/loknadh09/Parkinsons-Disease-Detection-Using-AI/main/par.webp") !important;
         background-size: cover !important;
@@ -20,40 +18,51 @@ st.markdown(
         background-repeat: no-repeat !important;
         background-attachment: fixed !important;
     }
-
-    /* Make the main Streamlit app container fully transparent to let the body background show through */
     .stApp {
-        background-color: rgba(0,0,0,0) !important;
+        position: relative;
+        z-index: 1;
     }
 
-    /* Make the header transparent */
+    .stApp::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("https://raw.githubusercontent.com/loknadh09/Parkinsons-Disease-Detection-Using-AI/main/par.webp");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        opacity: 0.2;
+        z-index: -1;
+    }
+
     .stApp > header {
         background-color: rgba(0,0,0,0) !important;
     }
 
-    /* Apply a translucent black background *only* to the content areas */
-    /* Adjust the fourth value (0.0 to 1.0) for the desired darkness/transparency of the content boxes */
-    div.st-emotion-cache-1pxazr7, /* Modern Streamlit container class */
-    .css-1d391kg.e16z5j303, /* Older Streamlit container class */
-    .e1fb0mya1.css-1r6dm1x.exnng7e0 /* Another older container class */
-    {
-        background-color: rgba(0, 0, 0, 0.7) !important; /* 70% opaque black for content, letting background show through */
+    .stApp {
+        background-color: rgba(0,0,0,0);
+    }
+    div.st-emotion-cache-1pxazr7,
+    .css-1d391kg.e16z5j303,
+    .e1fb0mya1.css-1r6dm1x.exnng7e0 {
+        background-color: rgba(0, 0, 0, 0.7) !important;
         padding: 20px !important;
         border-radius: 10px !important;
     }
 
-    /* Set text color to white and add a slight shadow for better visibility */
     h1, h2, h3, h4, h5, h6, p, label, .stMarkdown, .stText, .stButton>button, .stProgress .stProgress-label {
         color: #FFFFFF !important;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
     }
 
-    /* Ensure file uploader label is visible */
     .stFileUploader label span {
         color: #FFFFFF !important;
     }
 
-    /* Chart labels and titles (assuming Matplotlib charts as per your code) */
     .stPlotlyChart .modebar, .stPlotlyChart .js-plotly-plot .plotly .legend .legendtoggle {
         color: #FFFFFF !important;
     }
@@ -61,10 +70,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-# --- END CUSTOM CSS ---
 
-
-# --- ORIGINAL APP.PY FUNCTIONALITY STARTS HERE ---
 df = pd.read_csv("parkinsons.csv")
 if 'name' in df.columns:
     df = df.drop(columns=['name'])
@@ -74,6 +80,7 @@ y = df['status']
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
+
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
 model = RandomForestClassifier(random_state=42)
@@ -151,7 +158,8 @@ if uploaded_file is not None:
 
         missing_cols = set(X.columns) - set(input_df.columns)
         if missing_cols:
-            st.error(f"⚠️ Uploaded file is missing required features: {', '.join(missing_cols)}. Please ensure your CSV matches the expected format.")
+            # Removed the problematic formatting that might cause unterminated string
+            st.error(f"⚠️ Error: Uploaded file is missing required features: {', '.join(missing_cols)}. Please ensure your CSV matches the expected format.")
         else:
             input_df = input_df[X.columns]
             input_scaled = scaler.transform(input_df)
@@ -185,4 +193,6 @@ if uploaded_file is not None:
             plot_confidence_trend(predictions)
 
     except Exception as e:
-        st.error("⚠️ Error processing
+        # Simplified error message to avoid string termination issues
+        st.error("⚠️ An error occurred while processing the file. Please check the file format and content.")
+        st.exception(e) # This will print the full exception details in the console/logs
