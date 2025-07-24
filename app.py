@@ -14,7 +14,7 @@ st.markdown(
     <style>
     /* Overall app background */
     .stApp {{
-        background-image: url("https://raw.githubusercontent.com/loknadh09/Parkinsons-Disease-Detection-Using-AI/main/images/par.webp"); /* <--- PASTE YOUR RAW GITHUB URL FOR 'par.webp' HERE */
+        background-image: url("https://raw.githubusercontent.com/loknadh09/Parkinsons-Disease-Detection-Using-AI/refs/heads/main/par.webp"); 
         background-size: cover; /* Ensures the image covers the entire background */
         background-position: center; /* Centers the image */
         background-repeat: no-repeat; /* Prevents the image from repeating */
