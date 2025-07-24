@@ -58,7 +58,7 @@ st.markdown(
         text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
     }
 
-    /* Ensure file uploader label is visible */
+    /* Ensures file uploader label is visible */
     .stFileUploader label span {
         color: #FFFFFF !important;
     }
@@ -72,6 +72,10 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# --- Core Application Functionality ---
+
+# Load the dataset
+# Ensure 'parkinsons.csv' is in the same directory as 'app.py' or provide its path
 df = pd.read_csv("parkinsons.csv")
 if 'name' in df.columns:
     df = df.drop(columns=['name'])
@@ -79,13 +83,18 @@ if 'name' in df.columns:
 X = df.drop(columns=['status'])
 y = df['status']
 
+# Scale features
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
+
+# Split data
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
+# Train the model
 model = RandomForestClassifier(random_state=42)
 model.fit(X_train, y_train)
 
+# Calculate model accuracy on test data
 accuracy = model.score(X_test, y_test) * 100
 
 st.title("🧠 Parkinson's Disease Detection")
@@ -93,6 +102,7 @@ st.write("Upload a CSV file with matching features to predict Parkinson's diseas
 
 uploaded_file = st.file_uploader("📁 Upload your CSV file here", type=["csv"])
 
+# --- Chart Plotting Functions ---
 def plot_prediction_chart(probabilities):
     labels = [f"S{i+1}" for i in range(len(probabilities))]
     park_probs = [p[1]*100 for p in probabilities]
@@ -148,6 +158,7 @@ def plot_confidence_trend(probabilities):
     fig.patch.set_alpha(0.0)
     st.pyplot(fig)
 
+# --- File Uploader and Prediction Logic ---
 if uploaded_file is not None:
     try:
         input_df = pd.read_csv(uploaded_file)
@@ -156,10 +167,12 @@ if uploaded_file is not None:
         if 'status' in input_df.columns:
             input_df = input_df.drop(columns=['status'])
 
+        # Input validation: Ensure all expected columns are present
         missing_cols = set(X.columns) - set(input_df.columns)
         if missing_cols:
             st.error(f"⚠️ Uploaded file is missing required features: {', '.join(missing_cols)}. Please ensure your CSV matches the expected format.")
         else:
+            # Reorder columns to match training data before scaling
             input_df = input_df[X.columns]
             input_scaled = scaler.transform(input_df)
             predictions = model.predict_proba(input_scaled)
